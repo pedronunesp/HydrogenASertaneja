@@ -1,0 +1,18 @@
+# misc
+*.DS_Store*
+
+node_modules
+.vscode
+
+/.cache
+/build
+/dist
+/public/build
+/.mf
+.env
+.shopify
+.hydrogen
+.react-router
+
+# IntelliJ
+.idea

@@ -1,0 +1,22 @@
+import {redirect} from 'react-router';
+
+import type {Route} from './+types/($locale).api.redirect';
+
+export async function action({request}: Route.ActionArgs) {
+  let body;
+  try {
+    body = await request.formData();
+  } catch (error) {}
+  const to = String(body?.get('to') || '');
+  const status = Number(body?.get('status'));
+  const headersString = String(body?.get('headers') || '');
+  let headers;
+  try {
+    headers = JSON.parse(headersString);
+  } catch (error) {}
+
+  if (!to)
+    return Response.json({errors: ['Missing `to` in body']}, {status: 400});
+
+  return status ? redirect(to, {status, headers}) : redirect(to, {headers});
+}
