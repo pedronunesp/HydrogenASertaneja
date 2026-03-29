@@ -33,7 +33,7 @@ export default {
         link: {text: 'New Menu Item', url: ''},
       },
       defaultValue: [
-        {link: {text: 'Orders', url: '/account/orders'}},
+        {link: {text: 'Minhas Compras', url: '/account/orders'}},
         {link: {text: 'Addresses', url: '/account/addresses'}},
         {link: {text: 'Profile', url: '/account/profile'}},
       ],

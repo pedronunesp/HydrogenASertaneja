@@ -31,7 +31,7 @@ export const CartLine = memo(({closeCart, line}: CartLineProps) => {
   }, [merchandise.id]);
 
   return optimisticQuantity > 0 ? (
-    <div className="relative grid grid-cols-[auto_1fr] items-center gap-3 p-4 ">
+    <div className="relative grid grid-cols-[auto_1fr] items-start gap-3 p-4">
       <Link
         aria-label={`View ${merchandise.product.title}`}
         to={url}
@@ -48,12 +48,12 @@ export const CartLine = memo(({closeCart, line}: CartLineProps) => {
               ? `${image.width}/${image.height}`
               : PRODUCT_IMAGE_ASPECT_RATIO
           }
-          width="88px"
+          width="96px"
           className="bg-neutralLightest"
         />
       </Link>
 
-      <div className="flex min-h-[6.25em] flex-col justify-between gap-4">
+      <div className="flex min-h-[6rem] flex-col justify-between gap-3">
         <div className="relative flex flex-col items-start pr-6">
           <Link
             aria-label={`View ${merchandise.product.title}`}

@@ -25,17 +25,39 @@ export function CartPage() {
       data-comp={CartPage.displayName}
     >
       <div className="mx-auto max-w-screen-xl">
-        <h1 className="text-h2 mb-4 px-4">{heading || 'My Cart'}</h1>
+        <h1 className="text-h2 mb-4 px-4 md:px-0">{heading || 'My Cart'}</h1>
 
         <div
           className={clsx(
-            'grid gap-x-4 md:grid-flow-col-dense md:grid-rows-[auto_1fr] md:gap-y-4',
             hasCartLines
-              ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-[3fr_2fr]'
-              : 'grid-cols-1',
+              ? 'md:grid md:grid-cols-[3fr_2fr] md:grid-rows-[auto_1fr] md:gap-x-4 md:gap-y-4'
+              : '',
           )}
         >
-          <div className="md:row-span-2">
+          {hasCartLines && (
+            /*
+             * Summary panel — first in DOM so it renders at the top on mobile.
+             * On desktop, grid placement (col 2, row 1) moves it to the right column.
+             */
+            <div className="flex flex-col gap-0 border-b border-b-border md:col-start-2 md:row-start-1 md:gap-3 md:border-b-0">
+              <div className="[&>div]:md:rounded [&>div]:md:border [&>div]:md:border-border">
+                <FreeShippingMeter settings={cartSettings} />
+              </div>
+
+              <div className="[&>div]:border-t-0 [&>div]:md:rounded [&>div]:md:border [&>div]:md:border-border [&>div]:md:border-t">
+                <CartTotals settings={cartSettings} />
+              </div>
+            </div>
+          )}
+
+          {/* Cart items — left column on desktop, below summary on mobile */}
+          <div
+            className={clsx(
+              hasCartLines
+                ? 'md:col-start-1 md:row-start-1 md:row-span-2'
+                : '',
+            )}
+          >
             <ul
               className={clsx(
                 'relative border-y border-border',
@@ -43,16 +65,14 @@ export function CartPage() {
               )}
             >
               {hasCartLines ? (
-                cartLines.map((line) => {
-                  return (
-                    <li
-                      key={line.id}
-                      className="border-b border-b-border last:border-none"
-                    >
-                      <CartLine line={line} />
-                    </li>
-                  );
-                })
+                cartLines.map((line) => (
+                  <li
+                    key={line.id}
+                    className="border-b border-b-border last:border-none"
+                  >
+                    <CartLine line={line} />
+                  </li>
+                ))
               ) : (
                 <CartEmpty settings={cartSettings} />
               )}
@@ -60,18 +80,9 @@ export function CartPage() {
           </div>
 
           {hasCartLines && (
-            <div className="flex flex-col overflow-hidden md:gap-4">
-              <div className="[&>div]:max-md:border-t-0 [&>div]:md:rounded [&>div]:md:border [&>div]:md:border-border">
-                <CartTotals settings={cartSettings} />
-              </div>
-
-              <div className="[&>div]:border-b-0 [&>div]:border-t [&>div]:border-border [&>div]:md:rounded [&>div]:md:border">
-                <FreeShippingMeter settings={cartSettings} />
-              </div>
-
-              <div className="[&>div]:border-border [&>div]:md:rounded [&>div]:md:border">
-                <CartUpsell settings={cartSettings} />
-              </div>
+            /* Upsell — right column second row on desktop, below items on mobile */
+            <div className="md:col-start-2 md:row-start-2 [&>div]:border-border [&>div]:md:rounded [&>div]:md:border">
+              <CartUpsell settings={cartSettings} />
             </div>
           )}
         </div>
