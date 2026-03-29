@@ -1,16 +1,8 @@
 import {useMemo} from 'react';
 import {useLocation} from 'react-router';
-import {
-  Menu,
-  MenuButton,
-  MenuItems,
-  MenuItem,
-  Transition,
-} from '@headlessui/react';
 import clsx from 'clsx';
 
 import {Link} from '~/components/Link';
-import {Svg} from '~/components/Svg';
 import {useCustomer, useCustomerLogOut, useSettings} from '~/hooks';
 
 export function CustomerAccountLayout({children}: {children: React.ReactNode}) {
@@ -32,32 +24,54 @@ export function CustomerAccountLayout({children}: {children: React.ReactNode}) {
       className="px-contained py-contained"
       data-comp={CustomerAccountLayout.displayName}
     >
-      <div className="mx-auto grid w-full max-w-screen-xl grid-cols-1 gap-8 md:grid-cols-[12rem_1fr] lg:grid-cols-[16rem_1fr]">
+      <div className="mx-auto grid w-full max-w-screen-xl grid-cols-1 gap-6 md:grid-cols-[12rem_1fr] lg:grid-cols-[16rem_1fr]">
         <div>
-          <div className="flex flex-row justify-between gap-6 pb-6 md:flex-col md:justify-start md:border-b md:border-b-border">
-            <div className="flex-1">
-              <h2 className="text-h4 md:text-h5 lg:text-h4 mb-1 break-words">
-                Hi{customer?.firstName ? `, ${customer.firstName}` : ''}
+          {/* Greeting — compact on mobile, white background */}
+          <div className="flex items-center justify-between gap-4 border-b border-b-border pb-3 md:flex-col md:items-start md:gap-2 md:pb-6">
+            <div>
+              <h2 className="break-words text-base font-bold md:text-h5 lg:text-h4">
+                {customer?.firstName ? `Olá, ${customer.firstName}` : 'Minha Conta'}
               </h2>
-
-              <p className="break-words text-xs">
+              <p className="hidden break-words text-xs text-neutralMedium md:block">
                 {customer?.emailAddress?.emailAddress}
               </p>
             </div>
 
-            <div>
-              <button
-                aria-label="Sign out"
-                className="text-main-underline text-nav bg-[linear-gradient(var(--primary),var(--primary))] font-normal"
-                onClick={customerLogOut}
-                type="button"
-              >
-                Sign Out
-              </button>
-            </div>
+            <button
+              aria-label="Sign out"
+              className="shrink-0 text-xs text-neutralMedium underline underline-offset-2 transition md:hover:text-text"
+              onClick={customerLogOut}
+              type="button"
+            >
+              Sair
+            </button>
           </div>
 
-          {/* desktop nav */}
+          {/* Mobile: horizontal shortcut pills — shown immediately */}
+          <nav className="scrollbar-hide -mx-4 flex gap-2 overflow-x-auto px-4 py-3 md:hidden">
+            {menuItems?.map(({link}, index) => {
+              const isActive = activeMenuItem?.link?.url === link?.url;
+              return link?.text ? (
+                <Link
+                  key={index}
+                  aria-label={link.text}
+                  className={clsx(
+                    'whitespace-nowrap rounded-full border px-4 py-1.5 text-xs font-bold uppercase tracking-wide transition',
+                    isActive
+                      ? 'border-text bg-text text-background'
+                      : 'border-border bg-background text-text',
+                  )}
+                  newTab={link.newTab}
+                  to={link.url}
+                  type={link.type}
+                >
+                  {link.text}
+                </Link>
+              ) : null;
+            })}
+          </nav>
+
+          {/* Desktop nav */}
           <nav className="hidden border-b border-b-border py-6 md:block">
             <ul className="flex flex-col items-start md:gap-4 lg:gap-6">
               {menuItems?.map(({link}, index) => {
@@ -79,65 +93,7 @@ export function CustomerAccountLayout({children}: {children: React.ReactNode}) {
             </ul>
           </nav>
 
-          {/* mobile nav */}
-          <Menu as="div" className="relative w-full md:hidden">
-            <MenuButton
-              aria-label="Open account menu"
-              className="flex h-14 w-full items-center justify-between gap-4 rounded border border-neutralLight px-5 text-base"
-              type="button"
-            >
-              <p>{activeMenuItem?.link?.text}</p>
-
-              <Svg
-                className="w-4 text-text ui-open:rotate-180"
-                src="/svgs/chevron-down.svg#chevron-down"
-                title="Chevron Down"
-                viewBox="0 0 24 24"
-              />
-            </MenuButton>
-
-            <Transition
-              as="div"
-              className="absolute left-0 top-[calc(100%+0.5rem)] z-10 w-full rounded border border-neutralLight bg-background text-base"
-              enter="transition duration-100 ease-out"
-              enterFrom="transform scale-95 opacity-0"
-              enterTo="transform scale-100 opacity-100"
-              leave="transition duration-50 ease-out"
-              leaveFrom="transform scale-100 opacity-100"
-              leaveTo="transform scale-95 opacity-0"
-            >
-              <MenuItems
-                as="nav"
-                className="scrollbar-hide flex max-h-72 flex-col gap-0 overflow-y-auto py-2"
-              >
-                {menuItems?.map(({link}, index) => {
-                  return link?.text ? (
-                    <MenuItem key={index}>
-                      {({close}) => {
-                        const selected = activeMenuItem?.link?.url === link.url;
-                        return (
-                          <Link
-                            aria-label={link.text}
-                            className={clsx(
-                              'w-full px-5 py-1.5 transition md:hover:bg-neutralLightest',
-                              selected && 'bg-neutralLighter',
-                            )}
-                            onClick={close}
-                            to={link.url}
-                            newTab={link.newTab}
-                            type={link.type}
-                          >
-                            {link.text}
-                          </Link>
-                        );
-                      }}
-                    </MenuItem>
-                  ) : null;
-                })}
-              </MenuItems>
-            </Transition>
-          </Menu>
-
+          {/* Help section — desktop only */}
           <div className="flex flex-col gap-2 py-6 max-md:hidden">
             <h3 className="text-base font-normal">{helpHeading}</h3>
 
