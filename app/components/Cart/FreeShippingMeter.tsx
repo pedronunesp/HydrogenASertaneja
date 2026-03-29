@@ -60,13 +60,13 @@ export const FreeShippingMeter = memo(({settings}: FreeShippingMeterProps) => {
 
   return showMeter ? (
     <div className="border-b border-b-border p-4">
-      <p className="mb-2 text-center text-xs">{progress.message}</p>
+      <p className="mb-2 text-center text-xs font-medium">{progress.message}</p>
 
-      <div className="h-1.5 w-full overflow-hidden rounded bg-neutralLighter">
+      <div className="h-2 w-full overflow-hidden rounded-full bg-neutralLighter">
         <div
-          className="size-full origin-left transition"
+          className="size-full origin-left rounded-full transition-transform duration-500 ease-out"
           style={{
-            transform: `scaleX(${progress.percent}%)`,
+            transform: `scaleX(${progress.percent / 100})`,
             backgroundColor: progressBarColor,
           }}
         />

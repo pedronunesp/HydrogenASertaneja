@@ -4,6 +4,7 @@ import type {CartLine as CartLineType} from '@shopify/hydrogen/storefront-api-ty
 
 import {useCart, useGlobal, useSettings} from '~/hooks';
 
+import {CartDiscounts} from './CartDiscounts';
 import {CartEmpty} from './CartEmpty';
 import {CartLine} from './CartLine';
 import {CartTotals} from './CartTotals';
@@ -18,6 +19,7 @@ export function CartPage() {
   const cartLines = lines as CartLineType[];
   const heading = cartSettings?.heading ?? 'My Cart';
   const hasCartLines = totalQuantity > 0;
+  const enabledDiscounts = cartSettings?.discounts?.enabled ?? true;
 
   return (
     <section
@@ -25,7 +27,14 @@ export function CartPage() {
       data-comp={CartPage.displayName}
     >
       <div className="mx-auto max-w-screen-xl">
-        <h1 className="text-h2 mb-4 px-4 md:px-0">{heading || 'My Cart'}</h1>
+        <div className="mb-4 flex items-baseline gap-3 px-4 md:px-0">
+          <h1 className="text-h2">{heading || 'My Cart'}</h1>
+          {hasCartLines && (
+            <span className="text-sm text-neutralMedium">
+              {totalQuantity} {totalQuantity === 1 ? 'item' : 'itens'}
+            </span>
+          )}
+        </div>
 
         <div
           className={clsx(
@@ -40,13 +49,22 @@ export function CartPage() {
              * On desktop, grid placement (col 2, row 1) moves it to the right column.
              */
             <div className="flex flex-col gap-0 border-b border-b-border md:col-start-2 md:row-start-1 md:gap-3 md:border-b-0">
+              {/* Free shipping meter */}
               <div className="[&>div]:md:rounded [&>div]:md:border [&>div]:md:border-border">
                 <FreeShippingMeter settings={cartSettings} />
               </div>
 
+              {/* Totals + checkout */}
               <div className="[&>div]:border-t-0 [&>div]:md:rounded [&>div]:md:border [&>div]:md:border-border [&>div]:md:border-t">
                 <CartTotals settings={cartSettings} />
               </div>
+
+              {/* Discount codes */}
+              {enabledDiscounts && (
+                <div className="[&>div]:border-t [&>div]:border-t-border [&>div]:md:rounded [&>div]:md:border [&>div]:md:border-t-border">
+                  <CartDiscounts />
+                </div>
+              )}
             </div>
           )}
 

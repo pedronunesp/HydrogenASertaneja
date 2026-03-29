@@ -96,12 +96,12 @@ export const CartTotals = memo(({settings}: CartTotalsProps) => {
         totalQuantity ? 'flex' : 'hidden',
       )}
     >
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1.5">
         {isDiscounted && (
           <>
             {subtotalAmount !== totalAmount && (
-              <div className="flex justify-between">
-                <p className="font-bold">Subtotal</p>
+              <div className="flex justify-between text-sm">
+                <p className="text-neutralMedium">Subtotal</p>
                 <p>{subtotalAmount}</p>
               </div>
             )}
@@ -115,17 +115,21 @@ export const CartTotals = memo(({settings}: CartTotalsProps) => {
           </>
         )}
 
-        <div className="flex justify-between">
+        <div className="flex items-baseline justify-between">
           <p className="font-bold">Total</p>
-          <p>{totalAmount}</p>
+          <p className="text-lg font-bold">{totalAmount}</p>
         </div>
 
-        {subtext && <p className="text-xs">{subtext}</p>}
+        {subtext && <p className="text-xs text-neutralMedium">{subtext}</p>}
       </div>
 
       <Link className="btn-primary w-full" to={authenticatedCheckoutUrl}>
         {checkoutText}
       </Link>
+
+      <p className="text-center text-xs text-neutralMedium">
+        🔒 Pagamento seguro
+      </p>
     </div>
   );
 });

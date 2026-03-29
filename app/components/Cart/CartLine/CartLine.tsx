@@ -31,7 +31,7 @@ export const CartLine = memo(({closeCart, line}: CartLineProps) => {
   }, [merchandise.id]);
 
   return optimisticQuantity > 0 ? (
-    <div className="relative grid grid-cols-[auto_1fr] items-start gap-3 p-4">
+    <div className="grid grid-cols-[auto_1fr] gap-3 p-4">
       <Link
         aria-label={`View ${merchandise.product.title}`}
         to={url}
@@ -48,32 +48,37 @@ export const CartLine = memo(({closeCart, line}: CartLineProps) => {
               ? `${image.width}/${image.height}`
               : PRODUCT_IMAGE_ASPECT_RATIO
           }
-          width="96px"
+          width="100px"
           className="bg-neutralLightest"
         />
       </Link>
 
-      <div className="flex min-h-[6rem] flex-col justify-between gap-3">
-        <div className="relative flex flex-col items-start pr-6">
-          <Link
-            aria-label={`View ${merchandise.product.title}`}
-            to={url}
-            onClick={closeCart}
-          >
-            <h3 className="text-h6">{merchandise.product.title}</h3>
-          </Link>
+      <div className="flex min-h-[6.25rem] flex-col justify-between gap-2">
+        {/* Title row + remove */}
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex flex-col gap-0.5">
+            <Link
+              aria-label={`View ${merchandise.product.title}`}
+              to={url}
+              onClick={closeCart}
+            >
+              <h3 className="text-h6 leading-snug">{merchandise.product.title}</h3>
+            </Link>
 
-          {merchandise.title !== 'Default Title' && (
-            <p className="text-sm text-neutralMedium">{merchandise.title}</p>
-          )}
+            {merchandise.title !== 'Default Title' && (
+              <p className="text-xs text-neutralMedium">{merchandise.title}</p>
+            )}
+          </div>
 
+          {/* Remove button — larger touch target */}
           <button
             aria-label={`Remove ${merchandise.product.title} from cart`}
-            className="absolute right-0 top-0 w-3"
+            className="-mr-1 -mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-neutralMedium transition md:hover:bg-neutralLightest md:hover:text-text"
             onClick={handleRemove}
             type="button"
           >
             <Svg
+              className="w-3"
               src="/svgs/close.svg#close"
               title="Close"
               viewBox="0 0 24 24"
@@ -81,6 +86,7 @@ export const CartLine = memo(({closeCart, line}: CartLineProps) => {
           </button>
         </div>
 
+        {/* Quantity + price row */}
         <div className="flex items-end justify-between gap-3">
           <QuantitySelector
             handleDecrement={handleDecrement}
@@ -89,23 +95,23 @@ export const CartLine = memo(({closeCart, line}: CartLineProps) => {
             quantity={optimisticQuantity}
           />
 
-          <div className="flex flex-1 flex-col items-end pb-1">
+          <div className="flex flex-col items-end gap-0.5">
             {/* Applicable cart line discounts */}
             {discountAllocations?.length > 0 &&
               discountAllocations.map(
                 (discount: {title?: string; code?: string}, index) => {
                   if (!discount.title && !discount.code) return null;
                   return (
-                    <div key={index} className="flex items-start gap-1">
+                    <div key={index} className="flex items-center gap-1">
                       {discount.code && (
                         <Svg
-                          className="w-3.5 pt-0.5"
+                          className="w-3"
                           src="/svgs/discount.svg#discount"
                           title="Discount"
                           viewBox="0 0 24 24"
                         />
                       )}
-                      <p className="flex-1 pb-1 text-xs text-neutralMedium">
+                      <p className="text-xs text-neutralMedium">
                         {discount.title || discount.code}
                       </p>
                     </div>
@@ -113,13 +119,13 @@ export const CartLine = memo(({closeCart, line}: CartLineProps) => {
                 },
               )}
 
-            <div className="flex flex-wrap justify-end gap-x-2">
+            <div className="flex flex-wrap items-baseline justify-end gap-x-1.5">
               {compareAtPrice && (
-                <p className="text-neutralMedium line-through">
+                <p className="text-xs text-neutralMedium line-through">
                   {compareAtPrice}
                 </p>
               )}
-              <p>{price}</p>
+              <p className="text-sm font-semibold">{price}</p>
             </div>
           </div>
         </div>
